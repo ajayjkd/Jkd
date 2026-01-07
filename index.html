@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeworkAI - AI Homework Solver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 48px;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            margin-bottom: 32px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+        }
+
+        .section {
+            margin-bottom: 32px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 16px;
+            border: 3px solid #e2e8f0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ff 100%);
+            padding: 32px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 3px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            margin-top: 16px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(16, 185, 129, 0.5);
+        }
+
+        .generate-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .error-box {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            color: #dc2626;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .download-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 640px) {
+            .card { padding: 32px 24px; }
+            h1 { font-size: 28px; }
+            .subtitle { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">🎓</div>
+                <h1>AI Homework Solver</h1>
+                <p class="subtitle">Upload your assignment and get handwritten-style answers tailored to your grade level</p>
+            </div>
+
+            <label class="upload-btn">
+                📤 Upload Question Paper / Assignment
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleUpload(event)">
+            </label>
+
+            <div id="imagePreview" class="section hidden">
+                <div class="section-title">📝 Uploaded Question:</div>
+                <img id="uploadedImg" class="image-preview">
+            </div>
+
+            <div id="classSection" class="section hidden">
+                <div class="input-group">
+                    <label>🎯 What is your class/grade level?</label>
+                    <input
+                        type="text"
+                        id="classInput"
+                        placeholder="Enter your grade (e.g., 5, 8, 10, 12)"
+                        onkeypress="if(event.key==='Enter') generateAnswer()"
+                    >
+                    <button onclick="generateAnswer()" id="generateBtn" class="generate-btn">
+                        ✨ Generate Handwritten Answer
+                    </button>
+                </div>
+            </div>
+
+            <div id="errorMsg" class="error-box hidden"></div>
+
+            <div id="answerSection" class="section hidden">
+                <div class="answer-header">
+                    <div class="section-title">✅ Generated Answer (<span id="classLevel"></span>):</div>
+                    <button onclick="downloadAnswer()" class="download-btn">
+                        💾 Download
+                    </button>
+                </div>
+                <img id="answerImg" class="image-preview">
+                <button onclick="resetForm()" class="reset-btn">
+                    🔄 Generate Different Answer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas" style="display: none;"></canvas>
+
+    <script>
+        const API_URL = '/api/solve';
+        let imageData = null;
+        let currentClass = '';
+
+        function handleUpload(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imageData = event.target.result;
+                    document.getElementById('uploadedImg').src = imageData;
+                    document.getElementById('imagePreview').classList.remove('hidden');
+                    document.getElementById('classSection').classList.remove('hidden');
+                    document.getElementById('answerSection').classList.add('hidden');
+                    document.getElementById('errorMsg').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function drawAnswer(text) {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = 800;
+            const height = Math.max(1000, text.split('\n').length * 40 + 100);
+            
+            canvas.width = width;
+            canvas.height = height;
+
+            ctx.fillStyle = '#f8f8f0';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(60, 0);
+            ctx.lineTo(60, height);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 40; i < height; i += 35) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(width, i);
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = '#1e3a8a';
+            ctx.font = '22px "Courier New", monospace';
+            ctx.textBaseline = 'top';
+
+            const lines = text.split('\n');
+            let y = 50;
+            const lineHeight = 35;
+            const leftMargin = 80;
+            const maxWidth = width - leftMargin - 40;
+
+            lines.forEach(line => {
+                if (!line.trim()) {
+                    y += lineHeight;
+                    return;
+                }
+
+                const words = line.split(' ');
+                let currentLine = '';
+
+                words.forEach(word => {
+                    const testLine = currentLine + word + ' ';
+                    const metrics = ctx.measureText(testLine);
+
+                    if (metrics.width > maxWidth && currentLine) {
+                        const xOffset = Math.random() * 3 - 1.5;
+                        const yOffset = Math.random() * 2 - 1;
+                        ctx.fillText(currentLine, leftMargin + xOffset, y + yOffset);
+                        currentLine = word + ' ';
+                        y += lineHeight;
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+
+                if (currentLine) {
+                    const xOffset = Math.random() * 3 - 1.5;
+                    const yOffset = Math.random() * 2 - 1;
+                    ctx.fillText(currentLine, leftMargin + xOffset, y + yOffset);
+                    y += lineHeight;
+                }
+            });
+
+            return canvas.toDataURL('image/png');
+        }
+
+        async function generateAnswer() {
+            const classInput = document.getElementById('classInput').value.trim();
+            
+            if (!classInput) {
+                showError('Please enter your class level');
+                return;
+            }
+
+            currentClass = classInput;
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Generating Answer...';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image: imageData.split(',')[1],
+                        classLevel: classInput
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate answer');
+                }
+
+                const data = await response.json();
+
+                if (data.error || !data.success) {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+                const answerImage = drawAnswer(data.answer);
+                
+                document.getElementById('answerImg').src = answerImage;
+                document.getElementById('classLevel').textContent = `Class ${classInput}`;
+                document.getElementById('answerSection').classList.remove('hidden');
+                document.getElementById('classSection').classList.add('hidden');
+                document.getElementById('errorMsg').classList.add('hidden');
+
+            } catch (error) {
+                showError('Failed to generate answer. Please try again.');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✨ Generate Handwritten Answer';
+            }
+        }
+
+        function downloadAnswer() {
+            const link = document.createElement('a');
+            link.download = `homework-answer-class${currentClass}.png`;
+            link.href = document.getElementById('answerImg').src;
+            link.click();
+        }
+
+        function resetForm() {
+            document.getElementById('answerSection').classList.add('hidden');
+            document.getElementById('classSection').classList.remove('hidden');
+        }
+
+        function showError(msg) {
+            const error = document.getElementById('errorMsg');
+            error.textContent = msg;
+            error.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
