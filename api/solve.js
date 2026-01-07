@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -22,17 +21,17 @@ export default async function handler(req, res) {
       });
     }
 
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    const KEY = process.env.GEMINI_API_KEY;
 
-    if (!GEMINI_API_KEY) {
+    if (!KEY) {
       return res.status(500).json({ 
-        error: 'GEMINI_API_KEY not configured',
+        error: 'API key not configured',
         success: false 
       });
     }
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,6 +60,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error('Gemini API error:', data);
       throw new Error(JSON.stringify(data));
     }
 
