@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     }
 
     // FIXED: Using correct API version and model name
-    const apiUrl = `https://generativelanguage.googleapis.com/v1-beta/models/gemini-1.5-flash:generateContent?key=${KEY}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`;
     
     const response = await fetch(apiUrl, {
       method: 'POST',
