@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -26,37 +25,37 @@ export default async function handler(req, res) {
 
     if (!KEY) {
       return res.status(500).json({ 
-        error: 'API key not configured',
+        error: 'GEMINI_API_KEY not configured in Vercel environment variables',
         success: false 
       });
     }
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [
-              {
-                text: `You are helping a class ${classLevel} student with their homework. Analyze the questions in the image and provide clear, grade-appropriate answers. Format your response as if writing on lined paper with "Q1:", "Q2:", etc. Use vocabulary and explanations suitable for their grade level.`
-              },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: image
-                }
+    // FIXED: Using correct API version and model name
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=${KEY}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            {
+              text: `You are helping a class ${classLevel} student with their homework. Analyze the questions in the image and provide clear, grade-appropriate answers. Format your response as if writing on lined paper with "Q1:", "Q2:", etc. Use vocabulary and explanations suitable for their grade level.`
+            },
+            {
+              inline_data: {
+                mime_type: "image/jpeg",
+                data: image
               }
-            ]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 2048,
-          }
-        })
-      }
-    );
+            }
+          ]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2048,
+        }
+      })
+    });
 
     const data = await response.json();
 
